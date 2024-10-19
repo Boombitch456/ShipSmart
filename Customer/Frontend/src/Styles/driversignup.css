@@ -1,0 +1,41 @@
+.driver-signup {
+    background-color: #f9f9f9; /* Light background */
+    border-radius: 5px; /* Rounded corners */
+    padding: 20px; /* Inner spacing */
+    max-width: 400px; /* Max width for the form */
+    margin: auto; /* Center the form */
+}
+
+.driver-signup h2 {
+    text-align: center; /* Center title */
+}
+
+.form-group {
+    margin-bottom: 15px; /* Space between form fields */
+}
+
+.form-group label {
+    display: block; /* Block display for labels */
+    margin-bottom: 5px; /* Space below labels */
+}
+
+.form-group input {
+    width: 100%; /* Full width */
+    padding: 10px; /* Inner spacing */
+    border: 1px solid #ccc; /* Border styling */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.submit-button {
+    width: 100%; /* Full width for the button */
+    background-color: #007bff; /* Primary button color */
+    color: white; /* White text */
+    padding: 10px; /* Inner spacing */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+}
+
+.submit-button:hover {
+    background-color: #0056b3; /* Darker color on hover */
+}

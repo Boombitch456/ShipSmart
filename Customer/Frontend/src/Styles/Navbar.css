@@ -1,0 +1,45 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #007bff;
+    padding: 15px 20px;
+    color: white;
+}
+
+.navbar-brand h1 {
+    margin: 0;
+    font-size: 1.8em;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-links li {
+    margin: 0;
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1em;
+    transition: color 0.3s;
+}
+
+.navbar-links a:hover {
+    color: #e3e3e3;
+}
+
+.signup-driver {
+    background-color: #28a745;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.signup-driver:hover {
+    background-color: #218838;
+    color: white;
+}

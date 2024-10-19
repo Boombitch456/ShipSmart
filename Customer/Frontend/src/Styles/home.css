@@ -1,0 +1,99 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.homepage {
+    text-align: center;
+    padding: 20px;
+}
+
+.header {
+    background-color: #007bff;
+    color: white;
+    padding: 40px 20px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2.5em;
+}
+
+.header p {
+    font-size: 1.2em;
+}
+
+.cta-buttons {
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.book-ride {
+    background-color: #28a745;
+    color: white;
+}
+
+.book-ride:hover {
+    background-color: #218838;
+}
+
+.sign-in {
+    background-color: #007bff;
+    color: white;
+}
+
+.sign-in:hover {
+    background-color: #0056b3;
+}
+
+.features, .testimonials {
+    padding: 40px 20px;
+}
+
+.features h2, .testimonials h2 {
+    margin-top: 0;
+}
+
+.feature-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.feature {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    padding: 20px;
+    width: 30%;
+    min-width: 250px; /* Make sure it looks good on smaller screens */
+}
+
+.testimonial {
+    background-color: #fff;
+    border-radius: 5px;
+    margin: 10px auto;
+    padding: 20px;
+    max-width: 600px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.footer {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
