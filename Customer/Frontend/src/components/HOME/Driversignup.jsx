@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../Styles/driversignup.css';
+import '../../Styles/HOME/driversignup.css';
 import { Link } from 'react-router-dom';
 
 const DriverSignUp = () => {

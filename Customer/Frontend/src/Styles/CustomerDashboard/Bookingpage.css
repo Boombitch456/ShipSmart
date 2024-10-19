@@ -1,0 +1,65 @@
+.booking-page {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .booking-page h2, h3 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .form-group input, .form-group select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .btn-estimate {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .btn-estimate:hover {
+    background-color: #0056b3;
+  }
+  
+  .price-estimation {
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  .price-estimation p {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .map-container {
+    margin-top: 20px;
+    height: 400px;
+  }
+  

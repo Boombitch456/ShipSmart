@@ -1,6 +1,6 @@
 // SignIn.js
 import React, { useState } from 'react';
-import "../..//Styles/signin.css"
+import "../../Styles/HOME/signin.css"
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
