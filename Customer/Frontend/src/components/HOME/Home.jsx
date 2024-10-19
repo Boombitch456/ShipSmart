@@ -1,5 +1,5 @@
 import React from 'react';
-import '../Styles/home.css';
+import '../../Styles/home.css';
 import Navbar from "./Navbar"
 import Signin from "./Signin"
 
