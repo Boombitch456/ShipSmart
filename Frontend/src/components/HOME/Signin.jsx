@@ -1,6 +1,7 @@
 // SignIn.js
 import React, { useState } from 'react';
 import "../../Styles/HOME/signin.css"
+import { Link } from 'react-router-dom';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -36,7 +37,7 @@ const SignIn = () => {
             required
           />
         </div>
-        <button type="submit">Sign In</button>
+        <Link to="/customer-dashboard"><button type="submit">Sign In</button></Link>
       </form>
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import '../../Styles/HOME/Signup.css'; // Import CSS for styling
+import '../../Styles/HOME/Signup.css';
+import { Link } from 'react-router-dom'; // Import CSS for styling
 
 const Signup = () => {
     // State to handle form input values
@@ -116,7 +117,7 @@ const Signup = () => {
                 </div>
 
               
-                <button type="submit" className="signup-btn">Sign Up</button>
+                <Link to="/"><button type="submit" className="signup-btn">Sign Up</button></Link>
             </form>
         </div>
     );

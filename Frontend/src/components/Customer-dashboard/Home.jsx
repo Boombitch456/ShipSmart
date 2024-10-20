@@ -2,56 +2,36 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-routing-machine'; // Import Leaflet Routing Machine
 import '../../Styles/CustomerDashboard/Bookingpage.css';
 
 const Home = () => {
   const [pickupLocation, setPickupLocation] = useState('');
   const [dropoffLocation, setDropoffLocation] = useState('');
   const [pickupMarker, setPickupMarker] = useState(null);
-  const [vehicleType, setVehicleType] = useState('');
-  const [priceEstimate, setPriceEstimate] = useState(0);
   const [dropoffMarker, setDropoffMarker] = useState(null);
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
-  const handleCalculatePrice = () => {
-    const basePrice = 10;
-    const distanceFactor = 2;
-    const vehicleFactor = vehicleType === 'Van' ? 1.5 : vehicleType === 'Truck' ? 2 : 1;
+  const [map, setMap] = useState(null);
+  const [routeControl, setRouteControl] = useState(null);
 
-    const totalEstimate = basePrice * distanceFactor * vehicleFactor;
-    setPriceEstimate(totalEstimate);
-  };
   useEffect(() => {
     // Initialize the map
-    const map = L.map('map').setView([40.73061, -73.935242], 13); // Initial view
+    const initMap = L.map('map').setView([40.73061, -73.935242], 13); // Initial view
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap contributors',
-    }).addTo(map);
+    }).addTo(initMap);
 
-    // Add click event listener for the map
-    map.on('click', (e) => {
-      const { lat, lng } = e.latlng;
-
-      // Check if pickup marker is already set
-      if (!pickupMarker) {
-        setPickupMarker([lat, lng]);
-        setPickupLocation(`Pickup: [${lat}, ${lng}]`);
-        L.marker([lat, lng]).addTo(map).bindPopup('Pickup Location').openPopup();
-      } else if (!dropoffMarker) {
-        setDropoffMarker([lat, lng]);
-        setDropoffLocation(`Dropoff: [${lat}, ${lng}]`);
-        L.marker([lat, lng]).addTo(map).bindPopup('Drop-off Location').openPopup();
-      }
-    });
+    setMap(initMap);
 
     return () => {
       // Clean up the map on component unmount
-      map.remove();
+      initMap.remove();
     };
-  }, [pickupMarker, dropoffMarker]);
+  }, []);
 
   // Fetch suggestions from Nominatim API
   const fetchSuggestions = async (query, type) => {
@@ -92,15 +72,51 @@ const Home = () => {
 
   // Select a suggestion
   const handleSuggestionSelect = (suggestion, type) => {
+    const location = [suggestion.lat, suggestion.lon];
+
     if (type === 'pickup') {
       setPickupLocation(suggestion.display_name);
-      setPickupMarker([suggestion.lat, suggestion.lon]);
+      setPickupMarker(location);
       setPickupSuggestions([]); // Clear suggestions after selection
+
+      // Add the pickup marker to the map
+      L.marker(location).addTo(map).bindPopup('Pickup Location').openPopup();
     } else {
       setDropoffLocation(suggestion.display_name);
-      setDropoffMarker([suggestion.lat, suggestion.lon]);
+      setDropoffMarker(location);
       setDropoffSuggestions([]); // Clear suggestions after selection
+
+      // Add the dropoff marker to the map
+      L.marker(location).addTo(map).bindPopup('Drop-off Location').openPopup();
     }
+
+    // If both markers are set, draw the route
+    if (pickupMarker && dropoffMarker) {
+      drawRoute(location, dropoffMarker);
+    }
+  };
+
+  // Function to draw the route between pickup and dropoff locations
+  const drawRoute = (pickup, dropoff) => {
+    // Remove previous route if it exists
+    if (routeControl) {
+      routeControl.remove();
+    }
+
+    // Use Leaflet Routing Machine to calculate and draw the route
+    const newRouteControl = L.Routing.control({
+      waypoints: [L.latLng(pickup[0], pickup[1]), L.latLng(dropoff[0], dropoff[1])],
+      routeWhileDragging: true,
+      show: true,
+      createMarker: function () {
+        return null; // Remove default markers
+      },
+      router: L.Routing.osrmv1({
+        serviceUrl: 'https://router.project-osrm.org/route/v1',
+      }), // Explicitly use OSRM routing service
+    }).addTo(map);
+
+    setRouteControl(newRouteControl); // Save the current route control
   };
 
   return (
@@ -149,31 +165,7 @@ const Home = () => {
             </ul>
           )}
         </div>
-        <div className="form-group">
-          <label>Vehicle Type:</label>
-          <select
-            value={vehicleType}
-            onChange={(e) => setVehicleType(e.target.value)}
-          >
-            <option value="Car">Car</option>
-            <option value="Van">Van</option>
-            <option value="Truck">Truck</option>
-          </select>
-        </div>
-        <div className="price-estimation">
-          <button onClick={handleCalculatePrice} className="btn btn-estimate">
-            Get Price Estimate
-          </button>
-          {priceEstimate > 0 && <p>Estimated Price: ${priceEstimate.toFixed(2)}</p>}
-        </div>
-        <div className="price-estimation">
-          <button onClick={handleCalculatePrice} className="btn btn-estimate">
-            BOOK
-          </button>
-        </div>
       </div>
-
-      
 
       <h3>Select Locations on Map</h3>
       <div id="map" style={{ height: '400px', width: '100%' }}></div>
