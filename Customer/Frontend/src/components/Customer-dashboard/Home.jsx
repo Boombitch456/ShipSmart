@@ -92,6 +92,12 @@ const Home = () => {
           </button>
           {priceEstimate > 0 && <p>Estimated Price: ${priceEstimate.toFixed(2)}</p>}
         </div>
+        <div className="price-estimation">
+          <button onClick={handleCalculatePrice} className="btn btn-estimate">
+            BOOK
+          </button>
+          {priceEstimate > 0 && <p>Estimated Price: ${priceEstimate.toFixed(2)}</p>}
+        </div>
       </div>
 
       <h3>Select Locations on Map</h3>
