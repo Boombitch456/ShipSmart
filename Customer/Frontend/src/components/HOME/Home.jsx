@@ -2,6 +2,7 @@ import React from 'react';
 import '../../Styles/HOME/home.css';
 import Navbar from "./Navbar"
 import Signin from "./Signin"
+import { Link } from 'react-router-dom';
 
 
 export default function Home(){
@@ -16,7 +17,7 @@ export default function Home(){
          <Signin/>
           <button className="btn book-ride">Book a Ride</button>
           
-          <button className="btn sign-in">Don't have an Account? Sign up </button>
+          <Link to="/Signup"> <button className="btn sign-in">Don't have an Account? Sign up </button></Link> 
         </div>
         </div>
       </header>

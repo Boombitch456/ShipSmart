@@ -6,6 +6,7 @@ import DriverSignUp from './components/HOME/Driversignup';
 import DriverSignin from './components/HOME/Driversignin';
 import Customerdashboard from './components/Customer-dashboard/Home';
 import Driverdashboard from './components/Driver-Dashboard/Home';
+import Signup from './components/HOME/Signup';
 function App() {
 
 
@@ -16,6 +17,7 @@ function App() {
       <Route  path='/' element={<Home/>}/>
         <Route path="/driver-signup" element={<DriverSignUp />} />
         <Route path="/driver-signin" element={<DriverSignin />} />
+        <Route path="/Signup" element={<Signup/>} />
         <Route path="/customer-dashboard" element={<Customerdashboard/>} />
         <Route path="/driver-dashboard" element={<Driverdashboard/>} />
       </Routes>
