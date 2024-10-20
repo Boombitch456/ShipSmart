@@ -8,10 +8,19 @@ const Home = () => {
   const [pickupLocation, setPickupLocation] = useState('');
   const [dropoffLocation, setDropoffLocation] = useState('');
   const [pickupMarker, setPickupMarker] = useState(null);
+  const [vehicleType, setVehicleType] = useState('');
+  const [priceEstimate, setPriceEstimate] = useState(0);
   const [dropoffMarker, setDropoffMarker] = useState(null);
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
+  const handleCalculatePrice = () => {
+    const basePrice = 10;
+    const distanceFactor = 2;
+    const vehicleFactor = vehicleType === 'Van' ? 1.5 : vehicleType === 'Truck' ? 2 : 1;
 
+    const totalEstimate = basePrice * distanceFactor * vehicleFactor;
+    setPriceEstimate(totalEstimate);
+  };
   useEffect(() => {
     // Initialize the map
     const map = L.map('map').setView([40.73061, -73.935242], 13); // Initial view
@@ -140,7 +149,31 @@ const Home = () => {
             </ul>
           )}
         </div>
+        <div className="form-group">
+          <label>Vehicle Type:</label>
+          <select
+            value={vehicleType}
+            onChange={(e) => setVehicleType(e.target.value)}
+          >
+            <option value="Car">Car</option>
+            <option value="Van">Van</option>
+            <option value="Truck">Truck</option>
+          </select>
+        </div>
+        <div className="price-estimation">
+          <button onClick={handleCalculatePrice} className="btn btn-estimate">
+            Get Price Estimate
+          </button>
+          {priceEstimate > 0 && <p>Estimated Price: ${priceEstimate.toFixed(2)}</p>}
+        </div>
+        <div className="price-estimation">
+          <button onClick={handleCalculatePrice} className="btn btn-estimate">
+            BOOK
+          </button>
+        </div>
       </div>
+
+      
 
       <h3>Select Locations on Map</h3>
       <div id="map" style={{ height: '400px', width: '100%' }}></div>
