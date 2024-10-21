@@ -1,10 +1,9 @@
 .booking-page {
-    max-width: 800px;
-    margin: auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width:40%;
   }
   
   /* .suggestions-list {
@@ -17,6 +16,36 @@
     background-color: white;
     z-index: 1000;
   } */
+   .bookingarea{
+    display: flex;
+
+   }
+   .mapping{
+    width:60%;
+    padding: 20px;
+   
+   }
+  .nav{
+    background-color: #414141;
+    height: 60px;
+    display: flex;
+    padding-left: 40px;
+    padding-right: 40px;
+    align-items: center;
+    color: #f0f0f0;
+    font-weight: 600;
+  }
+  .logo{
+    font-size:xx-large;
+    font-family: 'Times New Roman', Times, serif;
+  }
+  .MyBookings{
+    padding-left: 40px;
+  }
+  .Logout{
+    float:inline-end;
+    margin-left: auto;
+  }
   
   .suggestions-list li {
     padding: 10px;
@@ -29,9 +58,11 @@
     background-color: #f0f0f0;
   }
    
+  
   .booking-page h2, h3 {
     text-align: center;
-    margin-bottom: 20px;
+    padding:0px;
+    margin:0px;
   }
   
   .form {
@@ -65,7 +96,10 @@
     cursor: pointer;
     width: 100%;
   }
-  
+  .map{
+    margin-top: 10px;
+    height: '500px'; width: '100%';
+  }
   .btn-estimate:hover {
     background-color: #0056b3;
   }
@@ -79,7 +113,7 @@
     font-size: 18px;
     font-weight: bold;
   }
-  
+
   .map-container {
     margin-top: 20px;
     height: 400px;

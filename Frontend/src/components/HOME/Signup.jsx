@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import '../../Styles/HOME/Signup.css';
-import { Link } from 'react-router-dom'; // Import CSS for styling
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirecting after signup
 
 const Signup = () => {
-    // State to handle form input values
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -11,9 +10,8 @@ const Signup = () => {
         confirmPassword: '',
         phone: ''
     });
-
-    // State for handling validation errors
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate(); // Hook to navigate to another page after signup
 
     // Handle input changes and update state
     const handleChange = (e) => {
@@ -37,16 +35,35 @@ const Signup = () => {
     };
 
     // Handle form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (validateForm()) {
-            // Handle form data (you can add API call to register the user here)
-            console.log('Form submitted:', formData);
-            alert('Signup successful!');
+            try {
+                const response = await fetch('http://localhost:5000/user', { // Adjust the URL if necessary
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData) // Send form data to backend
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Signup successful!');
+                    navigate('/'); // Redirect to login page
+                } else {
+                    alert(`Signup failed: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error during signup:', error);
+                alert('An error occurred during signup.');
+            }
         }
     };
 
     return (
+        <>
+        
         <div className="signup-container">
             <form onSubmit={handleSubmit} className="signup-form">
                 <h2>Customer Signup</h2>
@@ -63,7 +80,6 @@ const Signup = () => {
                     />
                     {errors.name && <span className="error-text">{errors.name}</span>}
                 </div>
-                
 
                 <div className="form-group">
                     <label>Email</label>
@@ -116,10 +132,10 @@ const Signup = () => {
                     {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
                 </div>
 
-              
-                <Link to="/"><button type="submit" className="signup-btn">Sign Up</button></Link>
+                <button type="submit" className="signup-btn">Sign Up</button>
             </form>
         </div>
+        </>
     );
 };
 

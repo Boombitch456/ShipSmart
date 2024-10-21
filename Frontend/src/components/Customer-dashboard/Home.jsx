@@ -124,9 +124,19 @@ const Home = () => {
   };
 
   return (
+    <>
+    <div className='nav'>
+           <div className='logo'>ShipSmart</div>
+           <div className="MyBookings">My Bookings</div>
+           <div className='Logout'>Logout</div>
+
+           
+        </div>
+        <div className='bookingarea'>
     <div className="booking-page">
+    <div className="form">
       <h2>Book Your Ride</h2>
-      <div className="form">
+     
         <div className="form-group">
           <label>Pickup Location:</label>
           <input
@@ -192,10 +202,13 @@ const Home = () => {
           </button>
         </div>
       </div>
-
+      </div>
+      <div className='mapping'>
       <h3>Select Locations on Map</h3>
-      <div id="map" style={{ height: '400px', width: '100%' }}></div>
+      <div id="map" style={{ marginTop: '10px' ,height: '450px', width: '100%' }}></div>
+      </div>
     </div>
+    </>
   );
 };
 

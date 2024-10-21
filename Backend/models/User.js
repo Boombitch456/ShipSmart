@@ -79,4 +79,4 @@ userSchema.methods.toJSON = function () {
 };
 
 const User = new mongoose.model("User",userSchema);
-export default User;
+module.exports = User;
