@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet-routing-machine'; // Import Leaflet Routing Machine
+import 'leaflet-routing-machine';
 import '../../Styles/CustomerDashboard/Bookingpage.css';
 
 const Home = () => {
@@ -10,10 +10,21 @@ const Home = () => {
   const [dropoffLocation, setDropoffLocation] = useState('');
   const [pickupMarker, setPickupMarker] = useState(null);
   const [dropoffMarker, setDropoffMarker] = useState(null);
+  const [vehicleType, setVehicleType] = useState('');
+  const [priceEstimate, setPriceEstimate] = useState(0);
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
   const [map, setMap] = useState(null);
   const [routeControl, setRouteControl] = useState(null);
+
+  const handleCalculatePrice = () => {
+    const basePrice = 10;
+    const distanceFactor = 2;
+    const vehicleFactor = vehicleType === 'Van' ? 1.5 : vehicleType === 'Truck' ? 2 : 1;
+
+    const totalEstimate = basePrice * distanceFactor * vehicleFactor;
+    setPriceEstimate(totalEstimate);
+  };
 
   useEffect(() => {
     // Initialize the map
@@ -73,30 +84,26 @@ const Home = () => {
   // Select a suggestion
   const handleSuggestionSelect = (suggestion, type) => {
     const location = [suggestion.lat, suggestion.lon];
-
     if (type === 'pickup') {
       setPickupLocation(suggestion.display_name);
-      setPickupMarker(location);
+      setPickupMarker(location); // Set marker coordinates in state
       setPickupSuggestions([]); // Clear suggestions after selection
-
-      // Add the pickup marker to the map
       L.marker(location).addTo(map).bindPopup('Pickup Location').openPopup();
     } else {
       setDropoffLocation(suggestion.display_name);
-      setDropoffMarker(location);
+      setDropoffMarker(location); // Set marker coordinates in state
       setDropoffSuggestions([]); // Clear suggestions after selection
-
-      // Add the dropoff marker to the map
       L.marker(location).addTo(map).bindPopup('Drop-off Location').openPopup();
-    }
-
-    // If both markers are set, draw the route
-    if (pickupMarker && dropoffMarker) {
-      drawRoute(location, dropoffMarker);
     }
   };
 
-  // Function to draw the route between pickup and dropoff locations
+  // Draw route when both pickup and dropoff markers are set
+  useEffect(() => {
+    if (pickupMarker && dropoffMarker) {
+      drawRoute(pickupMarker, dropoffMarker);
+    }
+  }, [pickupMarker, dropoffMarker]); // Trigger when either marker updates
+
   const drawRoute = (pickup, dropoff) => {
     // Remove previous route if it exists
     if (routeControl) {
@@ -111,12 +118,9 @@ const Home = () => {
       createMarker: function () {
         return null; // Remove default markers
       },
-      router: L.Routing.osrmv1({
-        serviceUrl: 'https://router.project-osrm.org/route/v1',
-      }), // Explicitly use OSRM routing service
     }).addTo(map);
 
-    setRouteControl(newRouteControl); // Save the current route control
+    setRouteControl(newRouteControl);
   };
 
   return (
@@ -164,6 +168,28 @@ const Home = () => {
               ))}
             </ul>
           )}
+        </div>
+        <div className="form-group">
+          <label>Vehicle Type:</label>
+          <select
+            value={vehicleType}
+            onChange={(e) => setVehicleType(e.target.value)}
+          >
+            <option value="Car">Car</option>
+            <option value="Van">Van</option>
+            <option value="Truck">Truck</option>
+          </select>
+        </div>
+        <div className="price-estimation">
+          <button onClick={handleCalculatePrice} className="btn btn-estimate">
+            Get Price Estimate
+          </button>
+          {priceEstimate > 0 && <p>Estimated Price: ${priceEstimate.toFixed(2)}</p>}
+        </div>
+        <div className="price-estimation">
+          <button onClick={handleCalculatePrice} className="btn btn-estimate">
+            BOOK
+          </button>
         </div>
       </div>
 
