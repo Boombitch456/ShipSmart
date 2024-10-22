@@ -17,6 +17,9 @@ const DriverSignUp = () => {
     termsAccepted: false,
   });
 
+  const [error, setError] = useState(null); // For displaying error messages
+  const [successMessage, setSuccessMessage] = useState(''); // For displaying success messages
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
@@ -25,16 +28,58 @@ const DriverSignUp = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(formData);
+    if (!formData.termsAccepted) {
+      setError('Please accept the Terms and Conditions.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/driver/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSuccessMessage('Driver registered successfully!');
+        setError(null); // Clear error message
+        // Reset form fields
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          password: '',
+          vehicleMake: '',
+          vehicleModel: '',
+          vehicleYear: '',
+          licensePlate: '',
+          drivingLicense: '',
+          availability: '',
+          termsAccepted: false,
+        });
+      } else {
+        setError(result.message || 'Something went wrong, please try again.');
+      }
+    } catch (err) {
+      setError('Error: Unable to connect to server.');
+    }
   };
 
   return (
     <div className="driver-signup">
       <h2>Sign Up as a Driver</h2>
       <p>Join our platform and start earning today!</p>
+
+      {/* Display success or error messages */}
+      {successMessage && <p className="success-message">{successMessage}</p>}
+      {error && <p className="error-message">{error}</p>}
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Full Name:</label>
@@ -74,7 +119,14 @@ const DriverSignUp = () => {
         </div>
         <div className="form-group">
           <label>Availability:</label>
-          <input type="text" name="availability" value={formData.availability} onChange={handleChange} placeholder="e.g., Mon-Fri, 9 AM - 5 PM" required />
+          <input
+            type="text"
+            name="availability"
+            value={formData.availability}
+            onChange={handleChange}
+            placeholder="e.g., Mon-Fri, 9 AM - 5 PM"
+            required
+          />
         </div>
         <div className="form-group">
           <label>
@@ -82,9 +134,11 @@ const DriverSignUp = () => {
             I agree to the Terms and Conditions
           </label>
         </div>
-        <button type="submit" className="btn submit-button">Sign Up</button>
+        <Link to="/driver-signin"><button type="submit" className="btn submit-button">Sign Up</button></Link> 
       </form>
-      <Link to="/driver-signin" >  <p>Already have an account? Log in</p></Link>
+      <Link to="/driver-signin">
+        <p>Already have an account? Log in</p>
+      </Link>
     </div>
   );
 };

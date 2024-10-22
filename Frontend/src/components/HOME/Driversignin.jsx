@@ -1,5 +1,6 @@
 import '../../Styles/HOME/driversignin.css'
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const DriverSignIn = () => {
   const [credentials, setCredentials] = useState({
@@ -34,7 +35,7 @@ const DriverSignIn = () => {
           <label>Password:</label>
           <input type="password" name="password" value={credentials.password} onChange={handleChange} required />
         </div>
-        <button type="submit" className="btn submit-button">Sign In</button>
+       <Link to="/driver-dashboard"> <button type="submit" className="btn submit-button">Sign In</button></Link>
       </form>
       <p><a href="/forgot-password">Forgot Password?</a></p>
       <p>New driver? <a href="/driver-signup">Sign up here</a></p>

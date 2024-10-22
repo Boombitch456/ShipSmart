@@ -1,45 +1,87 @@
 .driver-dashboard {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    max-width: 600px;
-  }
-  
-  .job-request, .current-job {
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-  }
-  
-  .job-request h3, .current-job h3 {
-    margin-bottom: 15px;
-  }
-  
-  .job-request p, .current-job p {
-    margin: 5px 0;
-  }
-  
-  .actions, .status-updates {
-    margin-top: 20px;
-  }
-  
-  button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    margin-right: 10px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  width: 100%;
+}
+
+.job-request, .current-job, .earnings-overview, .job-history, .map-placeholder {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+.info{
+  display: flex;
+}
+
+.leftinfo{
+  width: 40%;
+  padding: 20px;
+  padding-top: 0px;
+}
+.rightinfo{
+  width: 55%;
+}
+
+h2, h3 {
+  color: #0056b3;
+}
+
+.job-request h3, .current-job h3 {
+  margin-bottom: 15px;
+}
+
+.job-request p, .current-job p, .earnings-overview p {
+  margin: 5px 0;
+}
+
+.actions, .status-updates {
+  margin-top: 20px;
+}
+
+.availability {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+button, .status-btn {
+  padding: 10px 15px;
+  background-color: #0056b3;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  cursor: pointer;
+  color: #fff;
+}
+
+button:hover, .status-btn:hover {
+  background-color: #003d7a;
+}
+
+.earnings-overview ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.earnings-overview ul li {
+  margin: 10px 0;
+}
+
+.job-history ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.job-history ul li {
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.map-placeholder .map {
+  background-color: #f2f2f2;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  color: #888;
+}

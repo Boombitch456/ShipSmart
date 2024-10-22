@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Driver Schema
 const driverSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -17,14 +18,33 @@ const driverSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  vehicle: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Vehicle',
+  password: {
+    type: String,
     required: true
   },
-  location: {
-    type: { type: String, enum: ['Point'], required: true },
-    coordinates: { type: [Number], required: true }
+  vehicleMake: {
+    type: String,
+    required: true
+  },
+  vehicleModel: {
+    type: String,
+    required: true
+  },
+  vehicleYear: {
+    type: String,
+    required: true
+  },
+  licensePlate: {
+    type: String,
+    required: true
+  },
+  drivingLicense: {
+    type: String,
+    required: true
+  },
+  availability: {
+    type: String,
+    required: true
   },
   status: {
     type: String,
@@ -34,10 +54,6 @@ const driverSchema = new mongoose.Schema({
   rating: {
     type: Number,
     default: 5
-  },
-  currentBooking: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Booking'
   },
   totalTrips: {
     type: Number,
@@ -53,7 +69,5 @@ const driverSchema = new mongoose.Schema({
   }
 });
 
-driverSchema.index({ location: '2dsphere' });// Geospatial index for driver locations
 const Driver = mongoose.model('Driver', driverSchema);
-
 module.exports = Driver;

@@ -11,6 +11,9 @@ app.use(express.json()); // For parsing application/json
 app.use(cors()); // Enable CORS
 const userRoutes = require('./routes/user');
 app.use('/user', userRoutes);  // This makes the user routes accessible at /user
+const driverRoutes = require('./routes/driver'); // Import driver routes
+app.use('/driver', driverRoutes); // This makes the driver routes accessible at /driver
+
 
 
 // MongoDB Connection

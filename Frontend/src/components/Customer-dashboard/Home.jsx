@@ -204,7 +204,7 @@ const Home = () => {
       </div>
       </div>
       <div className='mapping'>
-      <h3>Select Locations on Map</h3>
+      <h3>Track Your Driver</h3>
       <div id="map" style={{ marginTop: '10px' ,height: '450px', width: '100%' }}></div>
       </div>
     </div>
