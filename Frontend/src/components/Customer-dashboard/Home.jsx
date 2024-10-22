@@ -5,30 +5,31 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 import '../../Styles/CustomerDashboard/Bookingpage.css';
 
-const Home = () => {
+const CustomerDashboard = () => {
   const [pickupLocation, setPickupLocation] = useState('');
   const [dropoffLocation, setDropoffLocation] = useState('');
   const [pickupMarker, setPickupMarker] = useState(null);
   const [dropoffMarker, setDropoffMarker] = useState(null);
-  const [vehicleType, setVehicleType] = useState('');
+  const [vehicleType, setVehicleType] = useState('Car');
   const [priceEstimate, setPriceEstimate] = useState(0);
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
   const [map, setMap] = useState(null);
   const [routeControl, setRouteControl] = useState(null);
 
+  // Handle price calculation based on vehicle type and distance
   const handleCalculatePrice = () => {
-    const basePrice = 10;
-    const distanceFactor = 2;
+    const basePrice = 10; // Base fare
+    const distanceFactor = 2; // Placeholder for distance calculation
     const vehicleFactor = vehicleType === 'Van' ? 1.5 : vehicleType === 'Truck' ? 2 : 1;
 
     const totalEstimate = basePrice * distanceFactor * vehicleFactor;
     setPriceEstimate(totalEstimate);
   };
 
+  // Initialize the map on mount
   useEffect(() => {
-    // Initialize the map
-    const initMap = L.map('map').setView([40.73061, -73.935242], 13); // Initial view
+    const initMap = L.map('map').setView([40.73061, -73.935242], 13); // New York coordinates as default
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -39,12 +40,11 @@ const Home = () => {
     setMap(initMap);
 
     return () => {
-      // Clean up the map on component unmount
-      initMap.remove();
+      initMap.remove(); // Clean up map on unmount
     };
   }, []);
 
-  // Fetch suggestions from Nominatim API
+  // Fetch location suggestions from Nominatim API
   const fetchSuggestions = async (query, type) => {
     if (query.length < 3) {
       if (type === 'pickup') setPickupSuggestions([]);
@@ -67,13 +67,13 @@ const Home = () => {
     }
   };
 
-  // Handle input change for pickup and dropoff locations
+  // Handle changes for location input fields
   const handleLocationChange = (e, type) => {
     const value = e.target.value;
     if (type === 'pickup') {
       setPickupLocation(value);
       fetchSuggestions(value, 'pickup');
-      setDropoffSuggestions([]); // Clear dropoff suggestions when typing in pickup
+      setDropoffSuggestions([]); // Clear drop-off suggestions when typing in pickup
     } else {
       setDropoffLocation(value);
       fetchSuggestions(value, 'dropoff');
@@ -81,17 +81,17 @@ const Home = () => {
     }
   };
 
-  // Select a suggestion
+  // Handle selection from suggestions
   const handleSuggestionSelect = (suggestion, type) => {
     const location = [suggestion.lat, suggestion.lon];
     if (type === 'pickup') {
       setPickupLocation(suggestion.display_name);
-      setPickupMarker(location); // Set marker coordinates in state
+      setPickupMarker(location);
       setPickupSuggestions([]); // Clear suggestions after selection
       L.marker(location).addTo(map).bindPopup('Pickup Location').openPopup();
     } else {
       setDropoffLocation(suggestion.display_name);
-      setDropoffMarker(location); // Set marker coordinates in state
+      setDropoffMarker(location);
       setDropoffSuggestions([]); // Clear suggestions after selection
       L.marker(location).addTo(map).bindPopup('Drop-off Location').openPopup();
     }
@@ -102,114 +102,135 @@ const Home = () => {
     if (pickupMarker && dropoffMarker) {
       drawRoute(pickupMarker, dropoffMarker);
     }
-  }, [pickupMarker, dropoffMarker]); // Trigger when either marker updates
+  }, [pickupMarker, dropoffMarker]);
 
+  // Draw the route on the map using Leaflet Routing Machine
   const drawRoute = (pickup, dropoff) => {
-    // Remove previous route if it exists
     if (routeControl) {
-      routeControl.remove();
+      routeControl.remove(); // Remove previous route if it exists
     }
 
-    // Use Leaflet Routing Machine to calculate and draw the route
     const newRouteControl = L.Routing.control({
       waypoints: [L.latLng(pickup[0], pickup[1]), L.latLng(dropoff[0], dropoff[1])],
       routeWhileDragging: true,
       show: true,
       createMarker: function () {
-        return null; // Remove default markers
+        return null; // Disable default markers
       },
     }).addTo(map);
 
     setRouteControl(newRouteControl);
   };
 
+  // Handle booking submission to the server
+  const handleBooking = async () => {
+    try {
+      const bookingData = {
+        user: 'user_id_here', // Replace with actual user ID
+        pickupLocation: pickupMarker,
+        dropOffLocation: dropoffMarker,
+        distance: 10, // Placeholder for distance, calculate based on route
+        estimatedPrice: priceEstimate,
+        vehicleType: vehicleType,
+        surgeMultiplier: 1.0, // Adjust if surge pricing is applicable
+      };
+
+      const response = await axios.post('http://localhost:5000/booking/book', bookingData);
+      if (response.status === 201) {
+        alert('Booking successful!');
+      }
+    } catch (error) {
+      console.error('Error during booking:', error);
+      alert('An error occurred during booking.');
+    }
+  };
+
   return (
     <>
-    <div className='nav'>
-           <div className='logo'>ShipSmart</div>
-           <div className="MyBookings">My Bookings</div>
-           <div className='Logout'>Logout</div>
+      <div className='nav'>
+        <div className='logo'>ShipSmart</div>
+        <div className="MyBookings">My Bookings</div>
+        <div className='Logout'>Logout</div>
+      </div>
+      
+      <div className='bookingarea'>
+        <div className="booking-page">
+          <div className="form">
+            <h2>Book Your Ride</h2>
+            <div className="form-group">
+              <label>Pickup Location:</label>
+              <input
+                type="text"
+                placeholder="Enter Pickup Location"
+                value={pickupLocation}
+                onChange={(e) => handleLocationChange(e, 'pickup')}
+              />
+              {pickupSuggestions.length > 0 && (
+                <ul className="suggestions-list">
+                  {pickupSuggestions.map((suggestion) => (
+                    <li
+                      key={suggestion.place_id}
+                      onClick={() => handleSuggestionSelect(suggestion, 'pickup')}
+                    >
+                      {suggestion.display_name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className="form-group">
+              <label>Drop-off Location:</label>
+              <input
+                type="text"
+                placeholder="Enter Drop-off Location"
+                value={dropoffLocation}
+                onChange={(e) => handleLocationChange(e, 'dropoff')}
+              />
+              {dropoffSuggestions.length > 0 && (
+                <ul className="suggestions-list">
+                  {dropoffSuggestions.map((suggestion) => (
+                    <li
+                      key={suggestion.place_id}
+                      onClick={() => handleSuggestionSelect(suggestion, 'dropoff')}
+                    >
+                      {suggestion.display_name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className="form-group">
+              <label>Vehicle Type:</label>
+              <select
+                value={vehicleType}
+                onChange={(e) => setVehicleType(e.target.value)}
+              >
+                <option value="Car">Car</option>
+                <option value="Van">Van</option>
+                <option value="Truck">Truck</option>
+              </select>
+            </div>
+            <div className="price-estimation">
+              <button onClick={handleCalculatePrice} className="btn btn-estimate">
+                Get Price Estimate
+              </button>
+              {priceEstimate > 0 && <p>Estimated Price: ${priceEstimate.toFixed(2)}</p>}
+            </div>
+            <div className="price-estimation">
+              <button onClick={handleBooking} className="btn btn-estimate">
+                BOOK
+              </button>
+            </div>
+          </div>
+        </div>
 
-           
-        </div>
-        <div className='bookingarea'>
-    <div className="booking-page">
-    <div className="form">
-      <h2>Book Your Ride</h2>
-     
-        <div className="form-group">
-          <label>Pickup Location:</label>
-          <input
-            type="text"
-            placeholder="Enter Pickup Location"
-            value={pickupLocation}
-            onChange={(e) => handleLocationChange(e, 'pickup')}
-          />
-          {pickupSuggestions.length > 0 && (
-            <ul className="suggestions-list">
-              {pickupSuggestions.map((suggestion) => (
-                <li
-                  key={suggestion.place_id}
-                  onClick={() => handleSuggestionSelect(suggestion, 'pickup')}
-                >
-                  {suggestion.display_name}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div className="form-group">
-          <label>Drop-off Location:</label>
-          <input
-            type="text"
-            placeholder="Enter Drop-off Location"
-            value={dropoffLocation}
-            onChange={(e) => handleLocationChange(e, 'dropoff')}
-          />
-          {dropoffSuggestions.length > 0 && (
-            <ul className="suggestions-list">
-              {dropoffSuggestions.map((suggestion) => (
-                <li
-                  key={suggestion.place_id}
-                  onClick={() => handleSuggestionSelect(suggestion, 'dropoff')}
-                >
-                  {suggestion.display_name}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div className="form-group">
-          <label>Vehicle Type:</label>
-          <select
-            value={vehicleType}
-            onChange={(e) => setVehicleType(e.target.value)}
-          >
-            <option value="Car">Car</option>
-            <option value="Van">Van</option>
-            <option value="Truck">Truck</option>
-          </select>
-        </div>
-        <div className="price-estimation">
-          <button onClick={handleCalculatePrice} className="btn btn-estimate">
-            Get Price Estimate
-          </button>
-          {priceEstimate > 0 && <p>Estimated Price: ${priceEstimate.toFixed(2)}</p>}
-        </div>
-        <div className="price-estimation">
-          <button onClick={handleCalculatePrice} className="btn btn-estimate">
-            BOOK
-          </button>
+        <div className='mapping'>
+          <h3>Track Your Driver</h3>
+          <div id="map" style={{ marginTop: '10px', height: '450px', width: '100%' }}></div>
         </div>
       </div>
-      </div>
-      <div className='mapping'>
-      <h3>Track Your Driver</h3>
-      <div id="map" style={{ marginTop: '10px' ,height: '450px', width: '100%' }}></div>
-      </div>
-    </div>
     </>
   );
 };
 
-export default Home;
+export default CustomerDashboard;

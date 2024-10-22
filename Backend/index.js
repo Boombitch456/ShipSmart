@@ -6,6 +6,7 @@ const cors = require('cors');
 dotenv.config(); // Load environment variables
 const app = express();
 
+
 // Middleware
 app.use(express.json()); // For parsing application/json
 app.use(cors()); // Enable CORS
@@ -14,6 +15,8 @@ app.use('/user', userRoutes);  // This makes the user routes accessible at /user
 const driverRoutes = require('./routes/driver'); // Import driver routes
 app.use('/driver', driverRoutes); // This makes the driver routes accessible at /driver
 
+const bookingRoutes = require('./routes/booking'); // Adjust path as necessaryb 
+app.use('/booking', bookingRoutes);
 
 
 // MongoDB Connection

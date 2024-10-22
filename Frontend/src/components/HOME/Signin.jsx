@@ -1,16 +1,25 @@
-// SignIn.js
 import React, { useState } from 'react';
-import "../../Styles/HOME/signin.css"
-import { Link } from 'react-router-dom';
+import "../../Styles/HOME/signin.css";
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate(); // To programmatically navigate the user
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle sign-in logic here (e.g., API call)
-    console.log('Email:', email, 'Password:', password);
+    try {
+      const response = await axios.post('http://localhost:5000/user/sign-in', { email, password });
+      if (response.status === 200) {
+        // Redirect to dashboard on successful sign-in
+        navigate('/customer-dashboard');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Sign-in failed');
+    }
   };
 
   return (
@@ -37,7 +46,8 @@ const SignIn = () => {
             required
           />
         </div>
-        <Link to="/customer-dashboard"><button type="submit">Sign In</button></Link>
+        {error && <p className="error">{error}</p>} {/* Display error message */}
+        <button type="submit">Sign In</button>
       </form>
     </div>
   );

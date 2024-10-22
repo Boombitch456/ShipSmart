@@ -40,4 +40,30 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+// Driver Sign-In Route
+router.post('/signin', async (req, res) => {
+    const { email, password } = req.body;
+  
+    try {
+      // Check if the driver exists
+      const driver = await Driver.findOne({ email });
+      if (!driver) {
+        return res.status(400).json({ message: 'Driver does not exist' });
+      }
+  
+      // Check if the password matches
+      const isMatch = await bcrypt.compare(password, driver.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: 'Invalid credentials' });
+      }
+  
+      // Successful sign-in
+      res.status(200).json({ message: 'Sign-in successful', driver });
+    } catch (error) {
+      console.error('Error during sign-in:', error);
+      res.status(500).json({ message: 'Error during sign-in', error });
+    }
+  });
+  
+
 module.exports = router;
