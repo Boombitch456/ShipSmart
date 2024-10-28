@@ -1,42 +1,45 @@
+// routes/booking.js
 const express = require('express');
 const router = express.Router();
-const Booking = require('../models/Booking'); // Adjust the path if necessary
-const mongoose = require('mongoose');
+const Booking = require('../models/Booking');
 
-// POST route to create a booking
+// Handle booking requests
 router.post('/book', async (req, res) => {
   try {
-    const { user, driver, pickupLocation, dropOffLocation, distance, estimatedPrice, vehicleType, surgeMultiplier } = req.body;
+    const { user, pickupLocation, dropOffLocation, distance, estimatedPrice, vehicleType, surgeMultiplier, pickupType, scheduledDate } = req.body;
 
-    // Validate the incoming data
-    if (!pickupLocation || !dropOffLocation || !distance || !vehicleType) {
-      return res.status(400).json({ error: 'All fields are required.' });
+    // Check if all required fields are received correctly
+    if (!user || !pickupLocation || !dropOffLocation || !distance || !estimatedPrice || !vehicleType) {
+      return res.status(400).json({ message: 'Missing required fields.' });
     }
 
     // Create a new booking
     const newBooking = new Booking({
-      user: mongoose.Types.ObjectId(user), // Ensure the user is passed as ObjectId
-      driver: driver ? mongoose.Types.ObjectId(driver) : null, // Optionally, include driver
+      user,
       pickupLocation: {
         type: 'Point',
-        coordinates: pickupLocation
+        coordinates: pickupLocation,
       },
       dropOffLocation: {
         type: 'Point',
-        coordinates: dropOffLocation
+        coordinates: dropOffLocation,
       },
       distance,
       estimatedPrice,
       vehicleType,
-      surgeMultiplier: surgeMultiplier || 1.0 // Default surgeMultiplier to 1 if not provided
+      surgeMultiplier,
+      status: 'pending',
+      paymentStatus: 'pending',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      ...(pickupType === 'later' && { scheduledDate })
     });
 
-    // Save the booking in the database
     const savedBooking = await newBooking.save();
-    res.status(201).json(savedBooking);
+    res.status(201).json({ message: 'Booking successful', booking: savedBooking });
   } catch (error) {
-    console.error('Error saving booking:', error);
-    res.status(500).json({ error: 'An error occurred while saving the booking.' });
+    console.error('Booking error:', error);
+    res.status(500).json({ message: 'An error occurred during booking' });
   }
 });
 

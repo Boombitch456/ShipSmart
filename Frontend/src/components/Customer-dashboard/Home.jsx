@@ -381,17 +381,17 @@ const CustomerDashboard = () => {
   const handleBooking = async () => {
     try {
       const bookingData = {
-        user: 'user_id_here', // Replace with actual user ID
-        pickupLocation: pickupMarker,
-        dropOffLocation: dropoffMarker,
-        distance: 10, // Placeholder for distance, calculate based on route
+        user: '671dfa29ac6806e164bcc30e', // Replace with actual user ID
+        pickupLocation: pickupMarker, // Should be in [lat, lon] format
+        dropOffLocation: dropoffMarker, // Should be in [lat, lon] format
+        distance: 10, // Placeholder for distance
         estimatedPrice: priceEstimate,
-        vehicleType: vehicleType,
-        surgeMultiplier: 1.0, // Adjust if surge pricing is applicable
-        pickupType: pickupType, // Add pickup type to booking data
-        scheduledDate: pickupType === 'later' ? scheduledDate : null, // Add scheduled date if applicable
+        vehicleType,
+        surgeMultiplier: 1.0,
+        pickupType,
+        scheduledDate: pickupType === 'later' ? scheduledDate : null
       };
-
+  
       const response = await axios.post('http://localhost:5000/booking/book', bookingData);
       if (response.status === 201) {
         alert('Booking successful!');
@@ -401,6 +401,7 @@ const CustomerDashboard = () => {
       alert('An error occurred during booking.');
     }
   };
+  
 
   return (
     <>
