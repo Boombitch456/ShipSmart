@@ -11,6 +11,7 @@ export default function Trackbooking(){
         <div className='booking details'>
             <div className='pickup'>Pickup location:</div>
             <div className='drop'>Dropoff location:</div>
+            <div className='hello'>whats us up </div>
         </div>
 
 
