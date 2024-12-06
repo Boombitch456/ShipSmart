@@ -16,6 +16,8 @@ const CustomerDashboard = () => {
   const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
   const [map, setMap] = useState(null);
   const [routeControl, setRouteControl] = useState(null);
+  const [pickupType, setPickupType] = useState('now'); // New state for pickup type (Now/Schedule)
+  const [scheduledDate, setScheduledDate] = useState(''); // State for storing scheduled date and time
 
   // Handle price calculation based on vehicle type and distance
   const handleCalculatePrice = () => {
@@ -125,25 +127,35 @@ const CustomerDashboard = () => {
   // Handle booking submission to the server
   const handleBooking = async () => {
     try {
+      if (!pickupMarker || !dropoffMarker) {
+        alert('Please select both pickup and drop-off locations.');
+        return;
+      }
+  
       const bookingData = {
-        user: 'user_id_here', // Replace with actual user ID
-        pickupLocation: pickupMarker,
-        dropOffLocation: dropoffMarker,
-        distance: 10, // Placeholder for distance, calculate based on route
+        user: 'user_id_here', // Replace with actual user ID from context or state
+        pickupLocation: pickupMarker, // Use coordinates for pickup location
+        dropOffLocation: dropoffMarker, // Use coordinates for drop-off location
+        distance: 10, // Placeholder for distance, can be calculated dynamically based on route
         estimatedPrice: priceEstimate,
-        vehicleType: vehicleType,
-        surgeMultiplier: 1.0, // Adjust if surge pricing is applicable
+        vehicleType: vehicleType.toLowerCase(), // Ensure lowercase values for enum
+        surgeMultiplier: 1.0, // Default surge multiplier
+        pickupType: pickupType, // Now or later
+        scheduledDate: pickupType === 'later' ? scheduledDate : null // Add scheduled date if applicable
       };
-
+  
       const response = await axios.post('http://localhost:5000/booking/book', bookingData);
       if (response.status === 201) {
         alert('Booking successful!');
+      } else {
+        alert('Booking failed.');
       }
     } catch (error) {
       console.error('Error during booking:', error);
       alert('An error occurred during booking.');
     }
   };
+  
 
   return (
     <>
@@ -210,6 +222,43 @@ const CustomerDashboard = () => {
                 <option value="Truck">Truck</option>
               </select>
             </div>
+                
+            {/* New section for pickup type */}
+            <div className="form-group">
+              <label>Pickup Type:</label>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    value="now"
+                    checked={pickupType === 'now'}
+                    onChange={() => setPickupType('now')}
+                  />{' '}
+                  Pickup Now
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    value="later"
+                    checked={pickupType === 'later'}
+                    onChange={() => setPickupType('later')}
+                  />{' '}
+                  Schedule for Later
+                </label>
+              </div>
+            </div>
+
+            {/* Show date picker if scheduling for later */}
+            {pickupType === 'later' && (
+              <div className="form-group">
+                <label>Pickup Date & Time:</label>
+                <input
+                  type="datetime-local"
+                  value={scheduledDate}
+                  onChange={(e) => setScheduledDate(e.target.value)}
+                />
+              </div>
+            )}
             <div className="price-estimation">
               <button onClick={handleCalculatePrice} className="btn btn-estimate">
                 Get Price Estimate
