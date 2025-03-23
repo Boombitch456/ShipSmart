@@ -133,15 +133,13 @@ const CustomerDashboard = () => {
       }
   
       const bookingData = {
-        user: 'user_id_here', // Replace with actual user ID from context or state
-        pickupLocation: pickupMarker, // Use coordinates for pickup location
-        dropOffLocation: dropoffMarker, // Use coordinates for drop-off location
-        distance: 10, // Placeholder for distance, can be calculated dynamically based on route
+        user: 'user_id_here', // Replace with actual user ID
+        pickupLocation: pickupMarker,
+        dropOffLocation: dropoffMarker,
+        distance: 10, // Placeholder for distance, calculate based on route
         estimatedPrice: priceEstimate,
-        vehicleType: vehicleType.toLowerCase(), // Ensure lowercase values for enum
-        surgeMultiplier: 1.0, // Default surge multiplier
-        pickupType: pickupType, // Now or later
-        scheduledDate: pickupType === 'later' ? scheduledDate : null // Add scheduled date if applicable
+        vehicleType: vehicleType,
+        surgeMultiplier: 1.0, // Adjust if surge pricing is applicable
       };
   
       const response = await axios.post('http://localhost:5000/booking/book', bookingData);
